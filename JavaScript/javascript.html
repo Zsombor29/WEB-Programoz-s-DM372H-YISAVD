@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JavaScript Practice</title>
+    <title>JavaScript CRUD</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,17 +11,86 @@
             margin: 50px auto;
             padding: 20px;
         }
+
+        input {
+            margin: 5px;
+            padding: 5px;
+        }
+
+        button {
+            margin: 5px;
+            padding: 5px 10px;
+        }
+
+        li {
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
-    <h1>JavaScript Practice</h1>
+
+    <h1>JavaScript CRUD alkalmazás</h1>
+
+    <input type="text" id="name" placeholder="Név">
+    <input type="number" id="age" placeholder="Kor">
+    <button onclick="addUser()">Hozzáadás</button>
+
+    <ul id="userList"></ul>
+
     <div id="output"></div>
 
     <script>
-        // Your JavaScript code here
+        let users = [
+            { name: "Anna", age: 22 },
+            { name: "Béla", age: 30 }
+        ];
+
         console.log("Hello, World!");
-        
         document.getElementById("output").innerHTML = "<p>JavaScript is working!</p>";
+
+        function render() {
+            const list = document.getElementById("userList");
+            list.innerHTML = "";
+
+            users.forEach((user, index) => {
+                list.innerHTML += `
+                    <li>
+                        ${user.name} (${user.age} év)
+                        <button onclick="editUser(${index})">Szerkeszt</button>
+                        <button onclick="deleteUser(${index})">Töröl</button>
+                    </li>
+                `;
+            });
+        }
+
+        function addUser() {
+            const name = document.getElementById("name").value;
+            const age = document.getElementById("age").value;
+
+            if (name && age) {
+                users.push({ name, age });
+                render();
+            }
+        }
+
+        function deleteUser(index) {
+            users.splice(index, 1);
+            render();
+        }
+
+        function editUser(index) {
+            const newName = prompt("Új név:", users[index].name);
+            const newAge = prompt("Új kor:", users[index].age);
+
+            if (newName && newAge) {
+                users[index] = { name: newName, age: newAge };
+                render();
+            }
+        }
+
+        // első megjelenítés
+        render();
     </script>
+
 </body>
 </html>
