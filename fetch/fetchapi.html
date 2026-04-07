@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch API Example</title>
+</head>
+<body>
+    <h1>Fetch API Demo</h1>
+    
+    <button id="fetchBtn">Fetch Data</button>
+    <div id="result"></div>
+
+    <script>
+        const fetchBtn = document.getElementById('fetchBtn');
+        const resultDiv = document.getElementById('result');
+
+        fetchBtn.addEventListener('click', () => {
+            fetch('https://api.github.com/users/github')
+                .then(response => response.json())
+                .then(data => {
+                    resultDiv.innerHTML = `<p>Name: ${data.name}</p><p>Bio: ${data.bio}</p>`;
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+                });
+        });
+    </script>
+</body>
+</html>
