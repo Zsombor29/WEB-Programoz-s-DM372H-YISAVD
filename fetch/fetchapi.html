@@ -1,30 +1,148 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fetch API Example</title>
+    <title>Pizza King – Fetch API CRUD</title>
+    <link rel="stylesheet" href="../JavaScript/style.css">
+    <script src="../menu.js"></script>
 </head>
 <body>
-    <h1>Fetch API Demo</h1>
-    
-    <button id="fetchBtn">Fetch Data</button>
-    <div id="result"></div>
 
-    <script>
-        const fetchBtn = document.getElementById('fetchBtn');
-        const resultDiv = document.getElementById('result');
+<main>
+    <section class="crud-card">
+        <h2 class="section-title">Pizza rendelések kezelése – Fetch API + adatbázis</h2>
 
-        fetchBtn.addEventListener('click', () => {
-            fetch('https://api.github.com/users/github')
-                .then(response => response.json())
-                .then(data => {
-                    resultDiv.innerHTML = `<p>Name: ${data.name}</p><p>Bio: ${data.bio}</p>`;
-                })
-                .catch(error => {
-                    resultDiv.innerHTML = `<p>Error: ${error.message}</p>`;
-                });
+        <div class="form-row">
+            <input type="text" id="pizzaNev" placeholder="Pizza neve">
+            <input type="number" id="darab" min="1" value="1" placeholder="Darab">
+            <select id="meret">
+                <option value="Kicsi">Kicsi</option>
+                <option value="Közepes">Közepes</option>
+                <option value="Nagy">Nagy</option>
+            </select>
+            <input type="text" id="vevoNev" placeholder="Vevő neve">
+            <button class="btn-primary" onclick="mentesRendeles()">Mentés</button>
+        </div>
+
+        <div id="uzenet"></div>
+        <ul id="rendelesLista" class="order-list"></ul>
+    </section>
+</main>
+
+<script>
+    const API_URL = 'api.php';
+    let szerkesztettId = null;
+
+    function uzenet(szoveg) {
+        document.getElementById("uzenet").innerHTML = `<div class="empty-box">${szoveg}</div>`;
+        setTimeout(() => {
+            document.getElementById("uzenet").innerHTML = "";
+        }, 1800);
+    }
+
+    function mezokUritese() {
+        document.getElementById("pizzaNev").value = "";
+        document.getElementById("darab").value = 1;
+        document.getElementById("meret").value = "Kicsi";
+        document.getElementById("vevoNev").value = "";
+        szerkesztettId = null;
+        document.querySelector(".btn-primary").textContent = "Mentés";
+    }
+
+    async function betoltes() {
+        try {
+            const response = await fetch(API_URL);
+            const adatok = await response.json();
+
+            const lista = document.getElementById("rendelesLista");
+            lista.innerHTML = "";
+
+            if (!adatok || adatok.length === 0) {
+                lista.innerHTML = `<div class="empty-box">Jelenleg nincs rendelés az adatbázisban.</div>`;
+                return;
+            }
+
+            adatok.forEach(rendeles => {
+                lista.innerHTML += `
+                    <li>
+                        <div class="order-info">
+                            <strong>${rendeles.pizza_nev}</strong>
+                            <span>Méret: ${rendeles.meret}</span>
+                            <span>Darab: ${rendeles.darab}</span>
+                            <span>Vevő: ${rendeles.vevo_nev}</span>
+                        </div>
+                        <div class="actions">
+                            <button class="btn-edit" onclick="szerkesztes(${rendeles.id}, '${rendeles.pizza_nev}', ${rendeles.darab}, '${rendeles.meret}', '${rendeles.vevo_nev}')">Szerkesztés</button>
+                            <button class="btn-delete" onclick="torles(${rendeles.id})">Törlés</button>
+                        </div>
+                    </li>
+                `;
+            });
+        } catch (error) {
+            document.getElementById("rendelesLista").innerHTML =
+                `<div class="empty-box">Nem sikerült kapcsolódni az adatbázishoz.</div>`;
+        }
+    }
+
+    function szerkesztes(id, pizzaNev, darab, meret, vevoNev) {
+        document.getElementById("pizzaNev").value = pizzaNev;
+        document.getElementById("darab").value = darab;
+        document.getElementById("meret").value = meret;
+        document.getElementById("vevoNev").value = vevoNev;
+
+        szerkesztettId = id;
+        document.querySelector(".btn-primary").textContent = "Módosítás mentése";
+    }
+
+    async function mentesRendeles() {
+        const pizzaNev = document.getElementById("pizzaNev").value.trim();
+        const darab = parseInt(document.getElementById("darab").value);
+        const meret = document.getElementById("meret").value;
+        const vevoNev = document.getElementById("vevoNev").value.trim();
+
+        if (!pizzaNev || !vevoNev || !darab || darab < 1) {
+            uzenet("Kérlek, tölts ki minden mezőt helyesen.");
+            return;
+        }
+
+        const adat = { pizza_nev: pizzaNev, darab, meret, vevo_nev: vevoNev };
+
+        if (szerkesztettId === null) {
+            await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(adat)
+            });
+            uzenet("Rendelés hozzáadva.");
+        } else {
+            await fetch(API_URL, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: szerkesztettId, ...adat })
+            });
+            uzenet("Rendelés módosítva.");
+        }
+
+        mezokUritese();
+        betoltes();
+    }
+
+    async function torles(id) {
+        if (!confirm("Biztosan törölni szeretnéd ezt a rendelést?")) return;
+
+        await fetch(API_URL, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
         });
-    </script>
+
+        uzenet("Rendelés törölve.");
+        betoltes();
+    }
+
+    betoltes();
+</script>
+
 </body>
 </html>
