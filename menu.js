@@ -1,0 +1,31 @@
+const isSubPage = window.location.pathname.includes('/JavaScript/');
+const basePath = isSubPage ? '../' : '';
+
+const headerEsNav = `
+<header class="site-header">
+    <div class="topbar">🍕 Friss, forró, gyors – Pizza King</div>
+    <h1>Web programozás-1 Előadás Házi feladat</h1>
+    <p class="subtitle">Pizza King rendeléskezelő rendszer</p>
+</header>
+
+<nav class="navbar">
+    <a href="${basePath}index.html">Főoldal</a>
+    <a href="${basePath}JavaScript/javascript.html">JavaScript CRUD</a>
+    <a href="${basePath}react.html">React CRUD</a>
+    <a href="#">SPA</a>
+    <a href="#">Fetch API</a>
+    <a href="#">Axios</a>
+    <a href="#">OOJS</a>
+</nav>
+`;
+
+const footer = `
+<footer class="site-footer">
+    Készítette: Baranyi Zsombor (DM372H) és Dancsházi Barnabás (YISAVD)
+</footer>
+`;
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.body.insertAdjacentHTML("afterbegin", headerEsNav);
+    document.body.insertAdjacentHTML("beforeend", footer);
+});

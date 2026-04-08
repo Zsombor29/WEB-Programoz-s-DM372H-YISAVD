@@ -3,84 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>React rendelés – Pizza King</title>
+    <title>Pizza King – React CRUD</title>
     <link rel="stylesheet" href="JavaScript/style.css">
-    <style>
-        /* Kiegészítő stílus az iframe-hez */
-        .react-frame {
-            width: 100%;
-            height: 700px;
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            margin: 20px 0;
-        }
+    <script src="menu.js"></script>
 
-        header {
-            background: linear-gradient(90deg, #ff6f00, #ff9900);
-            color: white;
-            text-align: center;
-            padding: 20px;
-        }
-
-        nav ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            background-color: #ffd699;
-            gap: 20px;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-            padding: 10px 15px;
-            display: block;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        nav a:hover {
-            background-color: #ff6f00;
-            color: white;
-            border-radius: 5px;
-        }
-
-        footer {
-            background-color: #ff6f00;
-            color: white;
-            text-align: center;
-            padding: 15px;
-            margin-top: 40px;
-        }
-    </style>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
-    <header>
-        <h1>Pizza King – React rendelés</h1>
-    </header>
 
-    <nav>
-        <ul>
-            <li><a href="index.html">Főoldal</a></li>
-            <li><a href="js/javascript.html">JS rendelés</a></li>
-            <li><a href="react.html">React rendelés</a></li>
-            <li><a href="spa/spa.html">SPA rendelés</a></li>
-            <li><a href="fetch/fetchapi.html">Fetch API</a></li>
-            <li><a href="axios/axios.html">Axios</a></li>
-            <li><a href="oojs/oojs.html">OOJS rendelés</a></li>
-        </ul>
-    </nav>
+<main id="root"></main>
 
-    <main>
-        <!-- Itt jelenik meg a React app -->
-        <iframe src="react/dist/index.html" class="react-frame"></iframe>
-    </main>
+<script type="text/babel">
+    const { useState } = React;
 
-    <footer>
-        <p>Készítette: Baranyi Zsombor (DM372H) és Dancsházi Barnabás (YISAVD)</p>
-    </footer>
+    function App() {
+        const [rendelesek, setRendelesek] = useState([
+            {
+                pizzaNev: "Hawaii pizza",
+                darab: 1,
+                meret: "Közepes",
+                vevoNev: "Szabó Márk"
+            },
+            {
+                pizzaNev: "Négysajtos pizza",
+                darab: 3,
+                meret: "Nagy",
+                vevoNev: "Tóth Luca"
+            }
+        ]);
+
+        const [pizzaNev, setPizzaNev] = useState("");
+        const [darab, setDarab] = useState(1);
+        const [meret, setMeret] = useState("Kicsi");
+        const [vevoNev, setVevoNev] = useState("");
+        const [szerkesztettIndex, setSzerkesztettIndex] = useState(-1);
+        const [uzenet, setUzenet] = useState("");
+
+        const mezokUritese = () => {
+            setPizzaNev("");
+            setDarab(1);
+            setMeret("Kicsi");
+            setVevoNev("");
+            setSzerkesztettIndex(-1);
+        };
+
+        const mentesRendeles = () => {
+            if (!pizzaNev.trim() || !vevoNev.trim() || darab < 1) {
+                setUzenet("Kérlek, tölts ki minden mezőt helyesen.");
+                return;
+            }
+
+            const ujRendeles = {
+                pizzaNev: pizzaNev.trim(),
+                darab: Number(darab),
+                meret,
+                vevoNev: vevoNev.trim()
+            };
+
+            if (szerkesztettIndex === -1) {
+                setRendelesek([...rendelesek, ujRendeles]);
+                setUzenet("Új rendelés hozzáadva.");
+            } else {
+                const ujLista = [...rendelesek];
+                ujLista[szerkesztettIndex] = ujRendeles;
+                setRendelesek(ujLista);
+                setUzenet("Rendelés módosítva.");
+            }
+
+            mezokUritese();
+        };
+
+        const szerkesztes = (index) => {
+            const rendeles = rendelesek[index];
+            setPizzaNev(rendeles.pizzaNev);
+            setDarab(rendeles.darab);
+            setMeret(rendeles.meret);
+            setVevoNev(rendeles.vevoNev);
+            setSzerkesztettIndex(index);
+        };
+
+        const torles = (index) => {
+            const ujLista = rendelesek.filter((_, i) => i !== index);
+            setRendelesek(ujLista);
+
+            if (szerkesztettIndex === index) {
+                mezokUritese();
+            }
+
+            setUzenet("A rendelés törölve lett.");
+        };
+
+        return (
+            <section className="crud-card">
+                <h2 className="section-title">Pizza rendelések kezelése – React CRUD</h2>
+
+                <div className="form-row">
+                    <input
+                        type="text"
+                        placeholder="Pizza neve"
+                        value={pizzaNev}
+                        onChange={(e) => setPizzaNev(e.target.value)}
+                    />
+
+                    <input
+                        type="number"
+                        min="1"
+                        value={darab}
+                        onChange={(e) => setDarab(e.target.value)}
+                    />
+
+                    <select value={meret} onChange={(e) => setMeret(e.target.value)}>
+                        <option value="Kicsi">Kicsi</option>
+                        <option value="Közepes">Közepes</option>
+                        <option value="Nagy">Nagy</option>
+                    </select>
+
+                    <input
+                        type="text"
+                        placeholder="Vevő neve"
+                        value={vevoNev}
+                        onChange={(e) => setVevoNev(e.target.value)}
+                    />
+
+                    <button className="btn-primary" onClick={mentesRendeles}>
+                        {szerkesztettIndex === -1 ? "Mentés" : "Módosítás"}
+                    </button>
+                </div>
+
+                {uzenet && <div className="empty-box" style={{marginBottom: "18px"}}>{uzenet}</div>}
+
+                {rendelesek.length === 0 ? (
+                    <div className="empty-box">Jelenleg nincs egyetlen rendelés sem.</div>
+                ) : (
+                    <ul className="order-list">
+                        {rendelesek.map((rendeles, index) => (
+                            <li key={index}>
+                                <div className="order-info">
+                                    <strong>{rendeles.pizzaNev}</strong>
+                                    <span>Méret: {rendeles.meret}</span>
+                                    <span>Darab: {rendeles.darab}</span>
+                                    <span>Vevő: {rendeles.vevoNev}</span>
+                                </div>
+
+                                <div className="actions">
+                                    <button className="btn-edit" onClick={() => szerkesztes(index)}>
+                                        Szerkesztés
+                                    </button>
+                                    <button className="btn-delete" onClick={() => torles(index)}>
+                                        Törlés
+                                    </button>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </section>
+        );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+</script>
+
 </body>
 </html>

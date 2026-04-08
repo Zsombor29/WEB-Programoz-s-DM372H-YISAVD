@@ -3,94 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JavaScript CRUD</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-        }
-
-        input {
-            margin: 5px;
-            padding: 5px;
-        }
-
-        button {
-            margin: 5px;
-            padding: 5px 10px;
-        }
-
-        li {
-            margin: 10px 0;
-        }
-    </style>
+    <title>Pizza King – JavaScript CRUD</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="../menu.js"></script>
 </head>
 <body>
 
-    <h1>JavaScript CRUD alkalmazás</h1>
+<main>
+    <section class="crud-card">
+        <h2 class="section-title">Pizza rendelések kezelése – JavaScript CRUD</h2>
 
-    <input type="text" id="name" placeholder="Név">
-    <input type="number" id="age" placeholder="Kor">
-    <button onclick="addUser()">Hozzáadás</button>
+        <div class="form-row">
+            <input type="text" id="pizzaNev" placeholder="Pizza neve">
+            <input type="number" id="darab" min="1" value="1" placeholder="Darab">
+            <select id="meret">
+                <option value="Kicsi">Kicsi</option>
+                <option value="Közepes">Közepes</option>
+                <option value="Nagy">Nagy</option>
+            </select>
+            <input type="text" id="vevoNev" placeholder="Vevő neve">
+            <button class="btn-primary" onclick="mentesRendeles()">Mentés</button>
+        </div>
 
-    <ul id="userList"></ul>
+        <div id="uzenet"></div>
+        <ul id="rendelesLista" class="order-list"></ul>
+    </section>
+</main>
 
-    <div id="output"></div>
+<script>
+    let rendelesek = [
+        {
+            pizzaNev: "Sonkás pizza",
+            darab: 2,
+            meret: "Nagy",
+            vevoNev: "Kiss Anna"
+        },
+        {
+            pizzaNev: "Magyaros pizza",
+            darab: 1,
+            meret: "Közepes",
+            vevoNev: "Nagy Péter"
+        }
+    ];
 
-    <script>
-        let users = [
-            { name: "Anna", age: 22 },
-            { name: "Béla", age: 30 }
-        ];
+    let szerkesztettIndex = -1;
 
-        console.log("Hello, World!");
-        document.getElementById("output").innerHTML = "<p>JavaScript is working!</p>";
+    function uzenetKiir(szoveg) {
+        document.getElementById("uzenet").innerHTML = `<div class="empty-box">${szoveg}</div>`;
+        setTimeout(() => {
+            document.getElementById("uzenet").innerHTML = "";
+        }, 1800);
+    }
 
-        function render() {
-            const list = document.getElementById("userList");
-            list.innerHTML = "";
+    function listaMegjelenitese() {
+        const lista = document.getElementById("rendelesLista");
+        lista.innerHTML = "";
 
-            users.forEach((user, index) => {
-                list.innerHTML += `
-                    <li>
-                        ${user.name} (${user.age} év)
-                        <button onclick="editUser(${index})">Szerkeszt</button>
-                        <button onclick="deleteUser(${index})">Töröl</button>
-                    </li>
-                `;
-            });
+        if (rendelesek.length === 0) {
+            lista.innerHTML = `<div class="empty-box">Jelenleg nincs egyetlen rendelés sem.</div>`;
+            return;
         }
 
-        function addUser() {
-            const name = document.getElementById("name").value;
-            const age = document.getElementById("age").value;
+        rendelesek.forEach((rendeles, index) => {
+            lista.innerHTML += `
+                <li>
+                    <div class="order-info">
+                        <strong>${rendeles.pizzaNev}</strong>
+                        <span>Méret: ${rendeles.meret}</span>
+                        <span>Darab: ${rendeles.darab}</span>
+                        <span>Vevő: ${rendeles.vevoNev}</span>
+                    </div>
 
-            if (name && age) {
-                users.push({ name, age });
-                render();
-            }
+                    <div class="actions">
+                        <button class="btn-edit" onclick="szerkesztes(${index})">Szerkesztés</button>
+                        <button class="btn-delete" onclick="torles(${index})">Törlés</button>
+                    </div>
+                </li>
+            `;
+        });
+    }
+
+    function mezoErtekek() {
+        return {
+            pizzaNev: document.getElementById("pizzaNev").value.trim(),
+            darab: parseInt(document.getElementById("darab").value),
+            meret: document.getElementById("meret").value,
+            vevoNev: document.getElementById("vevoNev").value.trim()
+        };
+    }
+
+    function mezokUritese() {
+        document.getElementById("pizzaNev").value = "";
+        document.getElementById("darab").value = 1;
+        document.getElementById("meret").value = "Kicsi";
+        document.getElementById("vevoNev").value = "";
+        szerkesztettIndex = -1;
+        document.querySelector(".btn-primary").textContent = "Mentés";
+    }
+
+    function mentesRendeles() {
+        const ujRendeles = mezoErtekek();
+
+        if (!ujRendeles.pizzaNev || !ujRendeles.vevoNev || !ujRendeles.darab || ujRendeles.darab < 1) {
+            uzenetKiir("Kérlek, tölts ki minden mezőt helyesen.");
+            return;
         }
 
-        function deleteUser(index) {
-            users.splice(index, 1);
-            render();
+        if (szerkesztettIndex === -1) {
+            rendelesek.push(ujRendeles);
+            uzenetKiir("Új rendelés sikeresen hozzáadva.");
+        } else {
+            rendelesek[szerkesztettIndex] = ujRendeles;
+            uzenetKiir("Rendelés sikeresen módosítva.");
         }
 
-        function editUser(index) {
-            const newName = prompt("Új név:", users[index].name);
-            const newAge = prompt("Új kor:", users[index].age);
+        mezokUritese();
+        listaMegjelenitese();
+    }
 
-            if (newName && newAge) {
-                users[index] = { name: newName, age: newAge };
-                render();
-            }
+    function szerkesztes(index) {
+        const rendeles = rendelesek[index];
+
+        document.getElementById("pizzaNev").value = rendeles.pizzaNev;
+        document.getElementById("darab").value = rendeles.darab;
+        document.getElementById("meret").value = rendeles.meret;
+        document.getElementById("vevoNev").value = rendeles.vevoNev;
+
+        szerkesztettIndex = index;
+        document.querySelector(".btn-primary").textContent = "Módosítás mentése";
+    }
+
+    function torles(index) {
+        if (confirm("Biztosan törölni szeretnéd ezt a rendelést?")) {
+            rendelesek.splice(index, 1);
+            mezokUritese();
+            listaMegjelenitese();
+            uzenetKiir("A rendelés törölve lett.");
         }
+    }
 
-        // első megjelenítés
-        render();
-    </script>
+    listaMegjelenitese();
+</script>
 
 </body>
 </html>
