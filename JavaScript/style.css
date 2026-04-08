@@ -1,53 +1,125 @@
-h1 {
-    color: #ff6f00;
-    text-align: center;
-    margin-top: 20px;
-}
-
+/* Alap stílusok */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #ffe6e6;
+    background-color: #fff5f0;
     color: #333;
 }
 
 header {
-    background-color: #ff6f00;
+    background: linear-gradient(90deg, #ff6f00, #ff9900);
     color: white;
-    padding: 20px;
     text-align: center;
+    padding: 30px 20px;
 }
 
+header h1 {
+    margin: 0;
+    font-size: 2.2rem;
+}
+
+header p {
+    margin-top: 10px;
+    font-size: 1rem;
+}
+
+/* Navigáció */
 nav ul {
     list-style-type: none;
     padding: 0;
-    margin: 10px 0 0 0;
+    margin: 0;
     display: flex;
     justify-content: center;
+    background-color: #ffd699;
     gap: 20px;
+}
+
+nav li {
+    margin: 0;
 }
 
 nav a {
     text-decoration: none;
-    color: black;
+    color: #333;
     font-weight: bold;
+    padding: 15px 10px;
+    display: block;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 nav a:hover {
-    text-decoration: underline;
+    background-color: #ff6f00;
+    color: white;
+    border-radius: 5px;
+}
+
+/* Fő tartalom */
+main {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.intro h2 {
+    color: #ff6f00;
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+.intro p {
+    text-align: center;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
 }
 
 .main-img {
-    width: 50%;
     display: block;
-    margin: 20px auto;
+    margin: 0 auto;
+    max-width: 60%;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
+/* Feature szekció */
+.features {
+    margin-top: 40px;
+}
+
+.features h2 {
+    text-align: center;
+    color: #ff6f00;
+    margin-bottom: 20px;
+}
+
+.feature-boxes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.feature {
+    background-color: #fff2e6;
+    border-radius: 10px;
+    padding: 20px;
+    width: 250px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.feature:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+/* Lábléc */
 footer {
     background-color: #ff6f00;
     color: white;
     text-align: center;
-    padding: 10px;
-    margin-top: 20px;
+    padding: 20px;
+    margin-top: 40px;
+    font-size: 0.9rem;
 }

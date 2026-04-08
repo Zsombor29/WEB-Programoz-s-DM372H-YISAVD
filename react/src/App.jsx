@@ -1,51 +1,55 @@
-import { useState } from 'react';
-import './index.css';
+import React, { useState } from 'react';
+import './style.css';   // ide már a style.css kell
 
 function App() {
   const [orders, setOrders] = useState([]);
-  const [name, setName] = useState('');
+  const [pizza, setPizza] = useState('');
   const [quantity, setQuantity] = useState(1);
 
   const addOrder = () => {
-    if (!name) return;
-    setOrders([...orders, { name, quantity }]);
-    setName('');
+    if (!pizza) return;
+    setOrders([...orders, { pizza, quantity }]);
+    setPizza('');
     setQuantity(1);
   };
 
-  const deleteOrder = (index) => {
-    const newOrders = orders.filter((_, i) => i !== index);
-    setOrders(newOrders);
+  const removeOrder = (index) => {
+    setOrders(orders.filter((_, i) => i !== index));
   };
 
   return (
-    <div>
-      <h1>🍕 Pizza King – React rendelés</h1>
+    <div className="react-container">
+      <h2>React rendelés – Pizza King</h2>
 
-      <input
-        type="text"
-        placeholder="Pizza neve"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
+      <div className="order-form">
+        <input 
+          type="text" 
+          placeholder="Pizza neve" 
+          value={pizza} 
+          onChange={(e) => setPizza(e.target.value)}
+        />
+        <input 
+          type="number" 
+          min="1" 
+          value={quantity} 
+          onChange={(e) => setQuantity(Number(e.target.value))}
+        />
+        <button onClick={addOrder}>Hozzáadás</button>
+      </div>
 
-      <input
-        type="number"
-        min="1"
-        value={quantity}
-        onChange={(e) => setQuantity(parseInt(e.target.value))}
-      />
-
-      <button onClick={addOrder}>Hozzáadás</button>
-
-      <ul>
-        {orders.map((order, index) => (
-          <li key={index}>
-            {order.name} – {order.quantity} db
-            <button onClick={() => deleteOrder(index)}>❌</button>
-          </li>
-        ))}
-      </ul>
+      <div className="orders-list">
+        <h3>Rendelések:</h3>
+        {orders.length === 0 ? <p>Nincs rendelés.</p> : 
+          <ul>
+            {orders.map((order, i) => (
+              <li key={i}>
+                {order.pizza} – {order.quantity} db
+                <button onClick={() => removeOrder(i)}>Törlés</button>
+              </li>
+            ))}
+          </ul>
+        }
+      </div>
     </div>
   );
 }

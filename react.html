@@ -2,27 +2,85 @@
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
-    <title>Pizza King – React rendelés</title>
-    <link rel="stylesheet" href="js/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React rendelés – Pizza King</title>
+    <link rel="stylesheet" href="JavaScript/style.css">
+    <style>
+        /* Kiegészítő stílus az iframe-hez */
+        .react-frame {
+            width: 100%;
+            height: 700px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            margin: 20px 0;
+        }
+
+        header {
+            background: linear-gradient(90deg, #ff6f00, #ff9900);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            background-color: #ffd699;
+            gap: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            padding: 10px 15px;
+            display: block;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: #ff6f00;
+            color: white;
+            border-radius: 5px;
+        }
+
+        footer {
+            background-color: #ff6f00;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 40px;
+        }
+    </style>
 </head>
 <body>
+    <header>
+        <h1>Pizza King – React rendelés</h1>
+    </header>
 
-<header>
-    <h1>Pizza King – React rendelés</h1>
     <nav>
-        <a href="index.html">Főoldal</a>
-        <a href="JavaScript/javascript.html">JS rendelés</a>
-        <a href="react.html">React rendelés</a>
+        <ul>
+            <li><a href="index.html">Főoldal</a></li>
+            <li><a href="js/javascript.html">JS rendelés</a></li>
+            <li><a href="react.html">React rendelés</a></li>
+            <li><a href="spa/spa.html">SPA rendelés</a></li>
+            <li><a href="fetch/fetchapi.html">Fetch API</a></li>
+            <li><a href="axios/axios.html">Axios</a></li>
+            <li><a href="oojs/oojs.html">OOJS rendelés</a></li>
+        </ul>
     </nav>
-</header>
 
-<main>
-    <iframe src="react/dist/index.html" width="100%" height="600px"></iframe>
-</main>
+    <main>
+        <!-- Itt jelenik meg a React app -->
+        <iframe src="react/dist/index.html" class="react-frame"></iframe>
+    </main>
 
-<footer>
-    <p>Készítők: Név (Neptun)</p>
-</footer>
-
+    <footer>
+        <p>Készítette: Baranyi Zsombor (DM372H) és Dancsházi Barnabás (YISAVD)</p>
+    </footer>
 </body>
 </html>
