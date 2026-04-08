@@ -40,21 +40,92 @@
     }
 
     function ArKalkulator() {
-        const [pizza, setPizza] = useState("Margarita");
+        const [pizza, setPizza] = useState("Babos");
         const [meret, setMeret] = useState("Kicsi");
         const [darab, setDarab] = useState(1);
 
         const arak = {
-            "Margarita": 2200,
-            "Sonkás": 2600,
-            "Magyaros": 2900,
-            "Négysajtos": 3100
+            "Áfonyás": 3390,
+            "Babos": 2790,
+            "Barbecue chicken": 3490,
+            "Betyáros": 3190,
+            "Caribi": 2690,
+            "Country": 3290,
+            "Csabesz": 3190,
+            "Csupa sajt": 2890,
+            "Erdő kapitánya": 2790,
+            "Erős János": 3090,
+            "Excellent": 3390,
+            "Főnök kedvence": 3290,
+            "Francia": 3590,
+            "Frankfurti": 3190,
+            "Füstös": 3190,
+            "Gino": 3290,
+            "Gombás": 2590,
+            "Góré": 3090,
+            "Görög": 3290,
+            "Gyros pizza": 3390,
+            "HamAndEggs": 2990,
+            "Hamm": 2990,
+            "Hawaii": 3390,
+            "Hellas": 3290,
+            "Hercegnő": 3190,
+            "Ilike": 2990,
+            "Ínyenc": 3190,
+            "Jázmin álma": 3090,
+            "Jobbágy": 3190,
+            "Juhtúrós": 3190,
+            "Kagylós": 3690,
+            "Kétszínű": 2990,
+            "Kiadós": 3290,
+            "Király pizza": 3490,
+            "Kívánság": 2890,
+            "Kolbászos": 2690,
+            "Lagúna": 3290,
+            "Lecsó": 2890,
+            "Maffiózó": 3290,
+            "Magvas": 2990,
+            "Magyaros": 3190,
+            "Máj Fair Lady": 3290,
+            "Mamma fia": 3190,
+            "Mexikói": 3490,
+            "Mixi": 3290,
+            "Nikó": 3190,
+            "Nordic": 3390,
+            "Nyuszó-Muszó": 3190,
+            "Pacalos": 3390,
+            "Pástétomos": 3190,
+            "Pásztor": 3090,
+            "Pipis": 3090,
+            "Popey": 3190,
+            "Quattro": 3390,
+            "Ráki": 3790,
+            "Rettenetes magyar": 3290,
+            "Röfi": 3190,
+            "Sajtos": 2490,
+            "So-ku": 2690,
+            "Son-go-ku": 3290,
+            "Sonkás": 2690,
+            "Spanyol": 3290,
+            "Spencer": 3490,
+            "Szalámis": 2690,
+            "Szardíniás": 3490,
+            "Szerzetes": 3190,
+            "Szőke kapitány": 3290,
+            "Tenger gyümölcsei": 3890,
+            "Tonhalas": 3390,
+            "Törperős": 3090,
+            "Tündi kedvence": 3190,
+            "Tüzes halál": 3390,
+            "Vega": 2890,
+            "Zöldike": 2990
         };
 
-        const meretSzorzo = {
+        const meretSzorzo = { // Szándékosan maradtak a "Kicsi", "Közepes", "Nagy" és "Óriási" értékek, hogy a kalkulátorban is megjelenjenek ezek a fantázianevek
             "Kicsi": 1,
             "Közepes": 1.25,
-            "Nagy": 1.5
+            "Nagy": 1.5,
+            "Óriási": 1.75
         };
 
         const vegosszeg = Math.round(arak[pizza] * meretSzorzo[meret] * darab);
@@ -66,16 +137,87 @@
 
                 <div className="form-row" style={{gridTemplateColumns: "1fr 1fr 1fr"}}>
                     <select value={pizza} onChange={(e) => setPizza(e.target.value)}>
-                        <option value="Margarita">Margarita</option>
-                        <option value="Sonkás">Sonkás</option>
+                        <option value="Áfonyás">Áfonyás</option>
+                        <option value="Babos">Babos</option>
+                        <option value="Barbecue chicken">Barbecue chicken</option>
+                        <option value="Betyáros">Betyáros</option>
+                        <option value="Caribi">Caribi</option>
+                        <option value="Country">Country</option>
+                        <option value="Csabesz">Csabesz</option>
+                        <option value="Csupa sajt">Csupa sajt</option>
+                        <option value="Erdő kapitánya">Erdő kapitánya</option>
+                        <option value="Erős János">Erős János</option>
+                        <option value="Excellent">Excellent</option>
+                        <option value="Főnök kedvence">Főnök kedvence</option>
+                        <option value="Francia">Francia</option>
+                        <option value="Frankfurti">Frankfurti</option>
+                        <option value="Füstös">Füstös</option>
+                        <option value="Gino">Gino</option>
+                        <option value="Gombás">Gombás</option>
+                        <option value="Góré">Góré</option>
+                        <option value="Görög">Görög</option>
+                        <option value="Gyros pizza">Gyros pizza</option>
+                        <option value="HamAndEggs">HamAndEggs</option>
+                        <option value="Hamm">Hamm</option>
+                        <option value="Hawaii">Hawaii</option>
+                        <option value="Hellas">Hellas</option>
+                        <option value="Hercegnő">Hercegnő</option>
+                        <option value="Ilike">Ilike</option>
+                        <option value="Ínyenc">Ínyenc</option>
+                        <option value="Jázmin álma">Jázmin álma</option>
+                        <option value="Jobbágy">Jobbágy</option>
+                        <option value="Juhtúrós">Juhtúrós</option>
+                        <option value="Kagylós">Kagylós</option>
+                        <option value="Kétszínű">Kétszínű</option>
+                        <option value="Kiadós">Kiadós</option>
+                        <option value="Király pizza">Király pizza</option>
+                        <option value="Kívánság">Kívánság</option>
+                        <option value="Kolbászos">Kolbászos</option>
+                        <option value="Lagúna">Lagúna</option>
+                        <option value="Lecsó">Lecsó</option>
+                        <option value="Maffiózó">Maffiózó</option>
+                        <option value="Magvas">Magvas</option>
                         <option value="Magyaros">Magyaros</option>
-                        <option value="Négysajtos">Négysajtos</option>
+                        <option value="Máj Fair Lady">Máj Fair Lady</option>
+                        <option value="Mamma fia">Mamma fia</option>
+                        <option value="Mexikói">Mexikói</option>
+                        <option value="Mixi">Mixi</option>
+                        <option value="Nikó">Nikó</option>
+                        <option value="Nordic">Nordic</option>
+                        <option value="Nyuszó-Muszó">Nyuszó-Muszó</option>
+                        <option value="Pacalos">Pacalos</option>
+                        <option value="Pástétomos">Pástétomos</option>
+                        <option value="Pásztor">Pásztor</option>
+                        <option value="Pipis">Pipis</option>
+                        <option value="Popey">Popey</option>
+                        <option value="Quattro">Quattro</option>
+                        <option value="Ráki">Ráki</option>
+                        <option value="Rettenetes magyar">Rettenetes magyar</option>
+                        <option value="Röfi">Röfi</option>
+                        <option value="Sajtos">Sajtos</option>
+                        <option value="So-ku">So-ku</option>
+                        <option value="Son-go-ku">Son-go-ku</option>
+                        <option value="Sonkás">Sonkás</option>
+                        <option value="Spanyol">Spanyol</option>
+                        <option value="Spencer">Spencer</option>
+                        <option value="Szalámis">Szalámis</option>
+                        <option value="Szardíniás">Szardíniás</option>
+                        <option value="Szerzetes">Szerzetes</option>
+                        <option value="Szőke kapitány">Szőke kapitány</option>
+                        <option value="Tenger gyümölcsei">Tenger gyümölcsei</option>
+                        <option value="Tonhalas">Tonhalas</option>
+                        <option value="Törperős">Törperős</option>
+                        <option value="Tündi kedvence">Tündi kedvence</option>
+                        <option value="Tüzes halál">Tüzes halál</option>
+                        <option value="Vega">Vega</option>
+                        <option value="Zöldike">Zöldike</option>
                     </select>
 
                     <select value={meret} onChange={(e) => setMeret(e.target.value)}>
-                        <option value="Kicsi">Kicsi</option>
-                        <option value="Közepes">Közepes</option>
-                        <option value="Nagy">Nagy</option>
+                        <option value="Kicsi">apród</option>
+                        <option value="Közepes">főnemes</option>
+                        <option value="Nagy">lovag</option>
+                        <option value="Óriási">király</option>
                     </select>
 
                     <input
