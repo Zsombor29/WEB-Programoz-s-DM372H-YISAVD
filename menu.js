@@ -1,4 +1,6 @@
-const isSubPage = window.location.pathname.includes('/JavaScript/') || window.location.pathname.includes('/fetch/');
+const isSubPage =   window.location.pathname.includes('/JavaScript/') ||
+                    window.location.pathname.includes('/fetch/') ||
+                    window.location.pathname.includes('/axios/');
 const basePath = isSubPage ? '../' : '';
 
 const headerEsNav = `
@@ -14,7 +16,7 @@ const headerEsNav = `
     <a href="${basePath}react.html">React CRUD</a>
     <a href="${basePath}spa.html">SPA</a>
     <a href="${basePath}fetch/fetchapi.html">Fetch API</a>
-    <a href="#">Axios</a>
+    <a href="${basePath}axios/axios.html">Axios</a>
     <a href="#">OOJS</a>
 </nav>
 `;

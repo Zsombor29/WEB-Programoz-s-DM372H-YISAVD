@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizza King – Axios CRUD (React)</title>
+    <link rel="stylesheet" href="../JavaScript/style.css">
+    <script src="../menu.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+
+<main id="root"></main>
+
+<script type="text/babel">
+    const { useState, useEffect } = React;
+    const API_URL = 'api.php';
+
+    function App() {
+        const [rendelesek, setRendelesek] = useState([]);
+        const [pizzaNev, setPizzaNev] = useState("");
+        const [darab, setDarab] = useState(1);
+        const [meret, setMeret] = useState("Kicsi");
+        const [vevoNev, setVevoNev] = useState("");
+        const [szerkesztettId, setSzerkesztettId] = useState(null);
+        const [uzenet, setUzenet] = useState("");
+        const [hiba, setHiba] = useState("");
+
+        // Adatok betöltése
+        const betolt = () => {
+            axios.get(API_URL)
+                .then(res => {
+                    setRendelesek(Array.isArray(res.data) ? res.data : []);
+                })
+                .catch(err => setHiba("Nem sikerült kapcsolódni az adatbázishoz."));
+        };
+
+        useEffect(() => { betolt(); }, []);
+
+        // Értesítések kezelése
+        const showUzenet = (szoveg) => {
+            setUzenet(szoveg);
+            setTimeout(() => setUzenet(""), 1800);
+        };
+
+        // Mezők ürítése
+        const mezokUritese = () => {
+            setPizzaNev("");
+            setDarab(1);
+            setMeret("Kicsi");
+            setVevoNev("");
+            setSzerkesztettId(null);
+        };
+
+        // Mentés vagy Módosítás
+        const mentes = () => {
+            if (!pizzaNev || !vevoNev || darab < 1) {
+                showUzenet("Kérlek, tölts ki minden mezőt helyesen.");
+                return;
+            }
+
+            const adat = { pizza_nev: pizzaNev, darab, meret, vevo_nev: vevoNev };
+
+            if (szerkesztettId === null) {
+                // Új hozzáadása
+                axios.post(API_URL, adat)
+                    .then(() => {
+                        showUzenet("Rendelés hozzáadva.");
+                        mezokUritese();
+                        betolt();
+                    });
+            } else {
+                // Módosítás
+                axios.put(API_URL, { id: szerkesztettId, ...adat })
+                    .then(() => {
+                        showUzenet("Rendelés módosítva.");
+                        mezokUritese();
+                        betolt();
+                    });
+            }
+        };
+
+        // Szerkesztés módba lépés
+        const szerkesztes = (rendeles) => {
+            setSzerkesztettId(rendeles.id);
+            setPizzaNev(rendeles.pizza_nev);
+            setDarab(rendeles.darab);
+            setMeret(rendeles.meret);
+            setVevoNev(rendeles.vevo_nev);
+        };
+
+        // Törlés
+        const torol = (id) => {
+            if (!confirm("Biztosan törölni szeretnéd ezt a rendelést?")) return;
+            axios.delete(API_URL, { data: { id: id } })
+                .then(() => {
+                    showUzenet("Rendelés törölve.");
+                    betolt();
+                });
+        };
+
+        return (
+            <section className="crud-card">
+                <h2 className="section-title">Pizza rendelések kezelése – Axios + React</h2>
+                
+                <div className="form-row">
+                    <input type="text" placeholder="Pizza neve" value={pizzaNev} onChange={(e) => setPizzaNev(e.target.value)} />
+                    <input type="number" min="1" value={darab} onChange={(e) => setDarab(e.target.value)} />
+                    <select value={meret} onChange={(e) => setMeret(e.target.value)}>
+                        <option value="Kicsi">Kicsi</option>
+                        <option value="Közepes">Közepes</option>
+                        <option value="Nagy">Nagy</option>
+                    </select>
+                    <input type="text" placeholder="Vevő neve" value={vevoNev} onChange={(e) => setVevoNev(e.target.value)} />
+                    <button className="btn-primary" onClick={mentes}>
+                        {szerkesztettId === null ? "Mentés" : "Módosítás mentése"}
+                    </button>
+                </div>
+
+                {uzenet && <div id="uzenet"><div className="empty-box">{uzenet}</div></div>}
+                {hiba && <div className="empty-box" style={{color: 'red'}}>{hiba}</div>}
+
+                <ul id="rendelesLista" className="order-list">
+                    {rendelesek.length === 0 && !hiba ? (
+                        <div className="empty-box">Jelenleg nincs rendelés az adatbázisban.</div>
+                    ) : (
+                        rendelesek.map(r => (
+                            <li key={r.id}>
+                                <div className="order-info">
+                                    <strong>{r.pizza_nev}</strong>
+                                    <span>Méret: {r.meret}</span>
+                                    <span>Darab: {r.darab}</span>
+                                    <span>Vevő: {r.vevo_nev}</span>
+                                </div>
+                                <div className="actions">
+                                    <button className="btn-edit" onClick={() => szerkesztes(r)}>Szerkesztés</button>
+                                    <button className="btn-delete" onClick={() => torol(r.id)}>Törlés</button>
+                                </div>
+                            </li>
+                        ))
+                    )}
+                </ul>
+            </section>
+        );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+</script>
+</body>
+</html>
