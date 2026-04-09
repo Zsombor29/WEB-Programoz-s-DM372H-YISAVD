@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pizza King – Axios CRUD (React)</title>
+    <title>Pizza King – Axios CRUD (Pro)</title>
     <link rel="stylesheet" href="../JavaScript/style.css">
     <script src="../menu.js"></script>
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
@@ -16,139 +16,163 @@
 <main id="root"></main>
 
 <script type="text/babel">
-    const { useState, useEffect } = React;
+    const { useState, useEffect, useMemo } = React;
     const API_URL = 'api.php';
 
     function App() {
         const [rendelesek, setRendelesek] = useState([]);
         const [pizzaNev, setPizzaNev] = useState("");
         const [darab, setDarab] = useState(1);
-        const [meret, setMeret] = useState("Kicsi");
+        const [meret, setMeret] = useState("apród");
         const [vevoNev, setVevoNev] = useState("");
         const [szerkesztettId, setSzerkesztettId] = useState(null);
         const [uzenet, setUzenet] = useState("");
         const [hiba, setHiba] = useState("");
 
-        // Adatok betöltése
+        const pizzaLista = ["Áfonyás", "Babos", "Barbecue chicken", "Betyáros", "Caribi", "Country", "Csabesz", "Csupa sajt", "Gombás", "Hawaii", "Király pizza"];
+        const kategoriak = ["apród", "főnemes", "lovag", "király"];
+
         const betolt = () => {
             axios.get(API_URL)
-                .then(res => {
-                    setRendelesek(Array.isArray(res.data) ? res.data : []);
-                })
-                .catch(err => setHiba("Nem sikerült kapcsolódni az adatbázishoz."));
+                .then(res => setRendelesek(Array.isArray(res.data) ? res.data : []))
+                .catch(() => setHiba("Hiba az adatok betöltésekor."));
         };
 
         useEffect(() => { betolt(); }, []);
 
-        // Értesítések kezelése
         const showUzenet = (szoveg) => {
             setUzenet(szoveg);
-            setTimeout(() => setUzenet(""), 1800);
+            setTimeout(() => setUzenet(""), 2500);
         };
 
-        // Mezők ürítése
         const mezokUritese = () => {
-            setPizzaNev("");
-            setDarab(1);
-            setMeret("Kicsi");
-            setVevoNev("");
-            setSzerkesztettId(null);
+            setPizzaNev(""); setDarab(1); setMeret("apród"); setVevoNev(""); setSzerkesztettId(null);
         };
 
-        // Mentés vagy Módosítás
-        const mentes = () => {
+        const mentes = async () => {
             if (!pizzaNev || !vevoNev || darab < 1) {
-                showUzenet("Kérlek, tölts ki minden mezőt helyesen.");
+                showUzenet("Minden mezőt tölts ki!");
                 return;
             }
 
             const adat = { pizza_nev: pizzaNev, darab, meret, vevo_nev: vevoNev };
 
-            if (szerkesztettId === null) {
-                // Új hozzáadása
-                axios.post(API_URL, adat)
-                    .then(() => {
-                        showUzenet("Rendelés hozzáadva.");
-                        mezokUritese();
-                        betolt();
-                    });
-            } else {
-                // Módosítás
-                axios.put(API_URL, { id: szerkesztettId, ...adat })
-                    .then(() => {
-                        showUzenet("Rendelés módosítva.");
-                        mezokUritese();
-                        betolt();
-                    });
+            try {
+                if (szerkesztettId === null) {
+                    await axios.post(API_URL, adat);
+                    showUzenet("Rendelés rögzítve!");
+                } else {
+                    await axios.put(API_URL, { id: szerkesztettId, ...adat });
+                    showUzenet("Rendelés frissítve!");
+                }
+                mezokUritese();
+                betolt();
+            } catch (err) {
+                showUzenet("Hiba történt a mentés során.");
             }
         };
 
-        // Szerkesztés módba lépés
-        const szerkesztes = (rendeles) => {
-            setSzerkesztettId(rendeles.id);
-            setPizzaNev(rendeles.pizza_nev);
-            setDarab(rendeles.darab);
-            setMeret(rendeles.meret);
-            setVevoNev(rendeles.vevo_nev);
-        };
-
-        // Törlés
-        const torol = (id) => {
-            if (!confirm("Biztosan törölni szeretnéd ezt a rendelést?")) return;
-            axios.delete(API_URL, { data: { id: id } })
-                .then(() => {
-                    showUzenet("Rendelés törölve.");
-                    betolt();
-                });
+        const torol = async (id) => {
+            if (!confirm("Biztosan törlöd?")) return;
+            try {
+                await axios.delete(API_URL, { data: { id } });
+                showUzenet("Rendelés törölve.");
+                betolt();
+            } catch (err) {
+                showUzenet("Nem sikerült a törlés.");
+            }
         };
 
         return (
             <section className="crud-card">
-                <h2 className="section-title">Pizza rendelések kezelése – Axios + React</h2>
+                <header className="form-header">
+                    <h2 className="section-title">Pizza King Admin – Axios CRUD</h2>
+                    <p>Adatbázis szinkronizált kezelőfelület</p>
+                </header>
                 
-                <div className="form-row">
-                    <input type="text" placeholder="Pizza neve" value={pizzaNev} onChange={(e) => setPizzaNev(e.target.value)} />
-                    <input type="number" min="1" value={darab} onChange={(e) => setDarab(e.target.value)} />
-                    <select value={meret} onChange={(e) => setMeret(e.target.value)}>
-                        <option value="Kicsi">Kicsi</option>
-                        <option value="Közepes">Közepes</option>
-                        <option value="Nagy">Nagy</option>
-                    </select>
-                    <input type="text" placeholder="Vevő neve" value={vevoNev} onChange={(e) => setVevoNev(e.target.value)} />
-                    <button className="btn-primary" onClick={mentes}>
-                        {szerkesztettId === null ? "Mentés" : "Módosítás mentése"}
+                <div className="form-row pro-layout">
+                    <div className="input-group">
+                        <label>Pizza kiválasztása</label>
+                        <select value={pizzaNev} onChange={(e) => setPizzaNev(e.target.value)}>
+                            <option value="">-- Válassz pizzát --</option>
+                            {pizzaLista.map(p => <option key={p} value={p}>{p}</option>)}
+                        </select>
+                    </div>
+
+                    <div className="input-group">
+                        <label>Mennyiség</label>
+                        <input type="number" min="1" value={darab} onChange={(e) => setDarab(e.target.value)} />
+                    </div>
+
+                    <div className="input-group">
+                        <label>Kategória</label>
+                        <select value={meret} onChange={(e) => setMeret(e.target.value)}>
+                            {kategoriak.map(k => <option key={k} value={k}>{k.toUpperCase()}</option>)}
+                        </select>
+                    </div>
+
+                    <div className="input-group">
+                        <label>Vevő neve</label>
+                        <input type="text" placeholder="Teljes név" value={vevoNev} onChange={(e) => setVevoNev(e.target.value)} />
+                    </div>
+
+                    <button className="btn-primary" onClick={mentes} style={{alignSelf: 'flex-end'}}>
+                        {szerkesztettId === null ? "Rendelés Mentése" : "Módosítás"}
                     </button>
                 </div>
 
-                {uzenet && <div id="uzenet"><div className="empty-box">{uzenet}</div></div>}
-                {hiba && <div className="empty-box" style={{color: 'red'}}>{hiba}</div>}
+                {uzenet && <div className="empty-box animate-fade">{uzenet}</div>}
+                {hiba && <div className="empty-box" style={{color: '#c1121f', border: '1px solid red'}}>{hiba}</div>}
 
-                <ul id="rendelesLista" className="order-list">
-                    {rendelesek.length === 0 && !hiba ? (
-                        <div className="empty-box">Jelenleg nincs rendelés az adatbázisban.</div>
-                    ) : (
-                        rendelesek.map(r => (
-                            <li key={r.id}>
-                                <div className="order-info">
-                                    <strong>{r.pizza_nev}</strong>
-                                    <span>Méret: {r.meret}</span>
-                                    <span>Darab: {r.darab}</span>
-                                    <span>Vevő: {r.vevo_nev}</span>
-                                </div>
-                                <div className="actions">
-                                    <button className="btn-edit" onClick={() => szerkesztes(r)}>Szerkesztés</button>
-                                    <button className="btn-delete" onClick={() => torol(r.id)}>Törlés</button>
-                                </div>
-                            </li>
-                        ))
-                    )}
-                </ul>
+                <div className="order-container">
+                    <ul className="order-list">
+                        {rendelesek.length === 0 ? (
+                            <div className="empty-box">Nincs aktív rendelés a rendszerben.</div>
+                        ) : (
+                            rendelesek.map(r => (
+                                <li key={r.id} className="order-item-pro">
+                                    <div className="order-info">
+                                        <div className="pizza-tag">{r.meret}</div>
+                                        <strong>{r.pizza_nev}</strong>
+                                        <div className="customer-details">
+                                            <span>👤 {r.vevo_nev}</span>
+                                            <span>📦 {r.darab} db</span>
+                                        </div>
+                                    </div>
+                                    <div className="actions">
+                                        <button className="btn-edit" onClick={() => {
+                                            setSzerkesztettId(r.id);
+                                            setPizzaNev(r.pizza_nev);
+                                            setDarab(r.darab);
+                                            setMeret(r.meret);
+                                            setVevoNev(r.vevo_nev);
+                                        }}>Szerkesztés</button>
+                                        <button className="btn-delete" onClick={() => torol(r.id)}>Törlés</button>
+                                    </div>
+                                </li>
+                            ))
+                        )}
+                    </ul>
+                </div>
             </section>
         );
     }
 
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
 </script>
+
+<style>
+    /* Néhány extra stílus a maximalizált kinézethez, amit a style.css-ed mellé tehetsz */
+    .pro-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .input-group { display: flex; flex-direction: column; gap: 5px; }
+    .input-group label { font-size: 12px; font-weight: bold; color: #8d0801; text-transform: uppercase; }
+    .pizza-tag { display: inline-block; background: #f77f00; color: white; padding: 2px 8px; border-radius: 4px; font-size: 10px; margin-bottom: 5px; text-transform: uppercase; }
+    .customer-details { display: flex; gap: 15px; font-size: 14px; margin-top: 5px; }
+    .order-item-pro { transition: transform 0.2s; }
+    .order-item-pro:hover { transform: translateX(5px); }
+    .animate-fade { animation: fadeIn 0.5s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
+
 </body>
 </html>
