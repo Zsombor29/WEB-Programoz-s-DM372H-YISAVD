@@ -1,6 +1,6 @@
 <?php
 
-$host = "localhost";
+$host = "mysql.omega";
 $dbname = "pizzarendeles";
 $user = "pizzarendeles";
 $pass = "Zsombor29-admin";
