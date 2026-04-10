@@ -1,8 +1,9 @@
 <?php
+
 $host = "localhost";
-$dbname = "pizzaking";
-$user = "root";
-$pass = "";
+$dbname = "pizzarendeles";
+$user = "pizzarendeles";
+$pass = "Zsombor29-admin";
 $charset = "utf8mb4";
 
 $dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
