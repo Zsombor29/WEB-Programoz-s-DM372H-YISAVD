@@ -23,20 +23,20 @@
             {
                 pizzaNev: "Hawaii pizza",
                 darab: 1,
-                meret: "Közepes",
+                meret: "főnemes",
                 vevoNev: "Szabó Márk"
             },
             {
                 pizzaNev: "Négysajtos pizza",
                 darab: 3,
-                meret: "Nagy",
+                meret: "lovag",
                 vevoNev: "Tóth Luca"
             }
         ]);
 
         const [pizzaNev, setPizzaNev] = useState("");
         const [darab, setDarab] = useState(1);
-        const [meret, setMeret] = useState("Kicsi");
+        const [meret, setMeret] = useState("apród");
         const [vevoNev, setVevoNev] = useState("");
         const [szerkesztettIndex, setSzerkesztettIndex] = useState(-1);
         const [uzenet, setUzenet] = useState("");
@@ -44,7 +44,7 @@
         const mezokUritese = () => {
             setPizzaNev("");
             setDarab(1);
-            setMeret("Kicsi");
+            setMeret("apród");
             setVevoNev("");
             setSzerkesztettIndex(-1);
         };
@@ -115,9 +115,10 @@
                     />
 
                     <select value={meret} onChange={(e) => setMeret(e.target.value)}>
-                        <option value="Kicsi">Kicsi</option>
-                        <option value="Közepes">Közepes</option>
-                        <option value="Nagy">Nagy</option>
+                        <option value="apród">apród</option>
+                        <option value="főnemes">főnemes</option>
+                        <option value="lovag">lovag</option>
+                        <option value="király">király</option>
                     </select>
 
                     <input

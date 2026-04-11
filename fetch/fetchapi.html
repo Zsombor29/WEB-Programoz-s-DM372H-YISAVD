@@ -17,9 +17,10 @@
             <input type="text" id="pizzaNev" placeholder="Pizza neve">
             <input type="number" id="darab" min="1" value="1" placeholder="Darab">
             <select id="meret">
-                <option value="Kicsi">Kicsi</option>
-                <option value="Közepes">Közepes</option>
-                <option value="Nagy">Nagy</option>
+                <option value="apród">apród</option>
+                <option value="főnemes">főnemes</option>
+                <option value="lovag">lovag</option>
+                <option value="király">király</option>
             </select>
             <input type="text" id="vevoNev" placeholder="Vevő neve">
             <button class="btn-primary" onclick="mentesRendeles()">Mentés</button>
@@ -44,7 +45,7 @@
     function mezokUritese() {
         document.getElementById("pizzaNev").value = "";
         document.getElementById("darab").value = 1;
-        document.getElementById("meret").value = "Kicsi";
+        document.getElementById("meret").value = "apród";
         document.getElementById("vevoNev").value = "";
         szerkesztettId = null;
         document.querySelector(".btn-primary").textContent = "Mentés";
