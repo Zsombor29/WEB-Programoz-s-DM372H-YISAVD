@@ -28,6 +28,8 @@
         const [szerkesztettId, setSzerkesztettId] = useState(null);
         const [uzenet, setUzenet] = useState("");
 
+        const pizzaLista = ["Áfonyás", "Babos", "Barbecue chicken", "Betyáros", "Caribi", "Country", "Csabesz", "Csupa sajt", "Gombás", "Hawaii", "Király pizza"];
+
         useEffect(() => {
             betolt();
         }, []);
@@ -51,7 +53,7 @@
             }
 
             const adat = {
-                pizza_nev: pizzaNev, // API ezt várja
+                pizza_nev: pizzaNev,
                 darab: darab,
                 meret: meret,
                 vevo_nev: vevoNev
@@ -88,12 +90,10 @@
                 <h2 className="section-title">Pizza rendelések kezelése – Axios CRUD</h2>
 
                 <div className="form-row">
-                    <input
-                        type="text"
-                        placeholder="Pizza neve"
-                        value={pizzaNev}
-                        onChange={(e) => setPizzaNev(e.target.value)}
-                    />
+                    <select value={pizzaNev} onChange={(e) => setPizzaNev(e.target.value)}>
+                        <option value="">  Válassz pizzát  </option>
+                        {pizzaLista.map(p => <option key={p} value={p}>{p}</option>)}
+                    </select>
                     <input
                         type="number"
                         min="1"

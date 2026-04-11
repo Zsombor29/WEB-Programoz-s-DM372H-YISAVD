@@ -21,13 +21,13 @@
     function App() {
         const [rendelesek, setRendelesek] = useState([
             {
-                pizzaNev: "Hawaii pizza",
+                pizzaNev: "Hawaii",
                 darab: 1,
                 meret: "főnemes",
                 vevoNev: "Szabó Márk"
             },
             {
-                pizzaNev: "Négysajtos pizza",
+                pizzaNev: "Csupa sajt",
                 darab: 3,
                 meret: "lovag",
                 vevoNev: "Tóth Luca"
@@ -38,61 +38,57 @@
         const [darab, setDarab] = useState(1);
         const [meret, setMeret] = useState("apród");
         const [vevoNev, setVevoNev] = useState("");
-        const [szerkesztettIndex, setSzerkesztettIndex] = useState(-1);
+        const [szerkesztettIndex, setSzerkesztettIndex] = useState(null);
         const [uzenet, setUzenet] = useState("");
+
+        const pizzaLista = ["Áfonyás", "Babos", "Barbecue chicken", "Betyáros", "Caribi", "Country", "Csabesz", "Csupa sajt", "Gombás", "Hawaii", "Király pizza"];
 
         const mezokUritese = () => {
             setPizzaNev("");
             setDarab(1);
             setMeret("apród");
             setVevoNev("");
-            setSzerkesztettIndex(-1);
+            setSzerkesztettIndex(null);
         };
 
-        const mentesRendeles = () => {
-            if (!pizzaNev.trim() || !vevoNev.trim() || darab < 1) {
-                setUzenet("Kérlek, tölts ki minden mezőt helyesen.");
+        const mentes = () => {
+            if (!pizzaNev || !vevoNev) {
+                setUzenet("Kérlek, tölts ki minden mezőt!");
+                setTimeout(() => setUzenet(""), 2000);
                 return;
             }
 
-            const ujRendeles = {
-                pizzaNev: pizzaNev.trim(),
-                darab: Number(darab),
-                meret,
-                vevoNev: vevoNev.trim()
-            };
+            const ujRendeles = { pizzaNev, darab, meret, vevoNev };
 
-            if (szerkesztettIndex === -1) {
+            if (szerkesztettIndex !== null) {
+                const frissitett = [...rendelesek];
+                frissitett[szerkesztettIndex] = ujRendeles;
+                setRendelesek(frissitett);
+                setUzenet("Rendelés módosítva.");
+            } else {
                 setRendelesek([...rendelesek, ujRendeles]);
                 setUzenet("Új rendelés hozzáadva.");
-            } else {
-                const ujLista = [...rendelesek];
-                ujLista[szerkesztettIndex] = ujRendeles;
-                setRendelesek(ujLista);
-                setUzenet("Rendelés módosítva.");
             }
 
             mezokUritese();
-        };
-
-        const szerkesztes = (index) => {
-            const rendeles = rendelesek[index];
-            setPizzaNev(rendeles.pizzaNev);
-            setDarab(rendeles.darab);
-            setMeret(rendeles.meret);
-            setVevoNev(rendeles.vevoNev);
-            setSzerkesztettIndex(index);
+            setTimeout(() => setUzenet(""), 2000);
         };
 
         const torles = (index) => {
-            const ujLista = rendelesek.filter((_, i) => i !== index);
-            setRendelesek(ujLista);
-
-            if (szerkesztettIndex === index) {
-                mezokUritese();
+            if (window.confirm("Biztosan törlöd?")) {
+                setRendelesek(rendelesek.filter((_, i) => i !== index));
+                setUzenet("A rendelés törölve lett.");
+                setTimeout(() => setUzenet(""), 2000);
             }
+        };
 
-            setUzenet("A rendelés törölve lett.");
+        const szerkesztes = (index) => {
+            const r = rendelesek[index];
+            setPizzaNev(r.pizzaNev);
+            setDarab(r.darab);
+            setMeret(r.meret);
+            setVevoNev(r.vevoNev);
+            setSzerkesztettIndex(index);
         };
 
         return (
@@ -100,36 +96,30 @@
                 <h2 className="section-title">Pizza rendelések kezelése – React CRUD</h2>
 
                 <div className="form-row">
-                    <input
-                        type="text"
-                        placeholder="Pizza neve"
-                        value={pizzaNev}
-                        onChange={(e) => setPizzaNev(e.target.value)}
-                    />
-
+                    <select value={pizzaNev} onChange={(e) => setPizzaNev(e.target.value)}>
+                        <option value="">  Válassz pizzát  </option>
+                        {pizzaLista.map(p => <option key={p} value={p}>{p}</option>)}
+                    </select>
                     <input
                         type="number"
                         min="1"
                         value={darab}
                         onChange={(e) => setDarab(e.target.value)}
                     />
-
                     <select value={meret} onChange={(e) => setMeret(e.target.value)}>
                         <option value="apród">apród</option>
                         <option value="főnemes">főnemes</option>
                         <option value="lovag">lovag</option>
                         <option value="király">király</option>
                     </select>
-
                     <input
                         type="text"
                         placeholder="Vevő neve"
                         value={vevoNev}
                         onChange={(e) => setVevoNev(e.target.value)}
                     />
-
-                    <button className="btn-primary" onClick={mentesRendeles}>
-                        {szerkesztettIndex === -1 ? "Mentés" : "Módosítás"}
+                    <button className="btn-primary" onClick={mentes}>
+                        {szerkesztettIndex !== null ? "Módosítás" : "Mentés"}
                     </button>
                 </div>
 

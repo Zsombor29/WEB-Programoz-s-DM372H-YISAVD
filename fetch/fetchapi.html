@@ -14,14 +14,19 @@
         <h2 class="section-title">Pizza rendelések kezelése – Fetch API + adatbázis</h2>
 
         <div class="form-row">
-            <input type="text" id="pizzaNev" placeholder="Pizza neve">
+            <select id="pizzaNev">
+                <option value="">  Válassz pizzát  </option>
+            </select>
+            
             <input type="number" id="darab" min="1" value="1" placeholder="Darab">
+            
             <select id="meret">
                 <option value="apród">apród</option>
                 <option value="főnemes">főnemes</option>
                 <option value="lovag">lovag</option>
                 <option value="király">király</option>
             </select>
+            
             <input type="text" id="vevoNev" placeholder="Vevő neve">
             <button class="btn-primary" onclick="mentesRendeles()">Mentés</button>
         </div>
@@ -41,6 +46,24 @@
             document.getElementById("uzenet").innerHTML = "";
         }, 1800);
     }
+
+    const pizzaLista = ["Áfonyás", "Babos", "Barbecue chicken", "Betyáros", "Caribi", "Country", "Csabesz", "Csupa sajt", "Gombás", "Hawaii", "Király pizza"];
+
+    function pizzaListaFeltoltes() {
+        const select = document.getElementById("pizzaNev");
+        pizzaLista.forEach(pizza => {
+            const option = document.createElement("option");
+            option.value = pizza;
+            option.text = pizza;
+            select.appendChild(option);
+         });
+    }
+
+        
+        document.addEventListener("DOMContentLoaded", () => {
+            pizzaListaFeltoltes();
+            betoltes();
+        });
 
     function mezokUritese() {
         document.getElementById("pizzaNev").value = "";
@@ -68,13 +91,13 @@
                 lista.innerHTML += `
                     <li>
                         <div class="order-info">
-                            <strong>${rendeles.pizza_nev}</strong>
+                            <strong>${rendeles.pizzanev}</strong>
                             <span>Méret: ${rendeles.meret}</span>
                             <span>Darab: ${rendeles.darab}</span>
-                            <span>Vevő: ${rendeles.vevo_nev}</span>
+                            <span>Vevő: ${rendeles.vevonev}</span>
                         </div>
                         <div class="actions">
-                            <button class="btn-edit" onclick="szerkesztes(${rendeles.id}, '${rendeles.pizza_nev}', ${rendeles.darab}, '${rendeles.meret}', '${rendeles.vevo_nev}')">Szerkesztés</button>
+                            <button class="btn-edit" onclick="szerkesztes(${rendeles.id}, '${rendeles.pizza_nev}', ${rendeles.darab}, '${rendeles.meret}', '${rendeles.vevonev}')">Szerkesztés</button>
                             <button class="btn-delete" onclick="torles(${rendeles.id})">Törlés</button>
                         </div>
                     </li>

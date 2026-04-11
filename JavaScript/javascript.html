@@ -14,13 +14,15 @@
         <h2 class="section-title">Pizza rendelések kezelése – JavaScript CRUD</h2>
 
         <div class="form-row">
-            <input type="text" id="pizzaNev" placeholder="Pizza neve">
+            <select id="pizzaNev">
+                <option value="">  Válassz pizzát  </option>
+            </select>
             <input type="number" id="darab" min="1" value="1" placeholder="Darab">
             <select id="meret">
-                <option value="Kicsi">apród</option>
-                <option value="Közepes">főneves</option>
-                <option value="Nagy">lovag</option>
-                <option value="Nagy">király</option>
+                <option value="apród">apród</option>
+                <option value="főnemes">főnemes</option>
+                <option value="lovag">lovag</option>
+                <option value="király">király</option>
             </select>
             <input type="text" id="vevoNev" placeholder="Vevő neve">
             <button class="btn-primary" onclick="mentesRendeles()">Mentés</button>
@@ -32,15 +34,17 @@
 </main>
 
 <script>
+    const pizzaLista = ["Áfonyás", "Babos", "Barbecue chicken", "Betyáros", "Caribi", "Country", "Csabesz", "Csupa sajt", "Gombás", "Hawaii", "Király pizza"];
+
     let rendelesek = [
         {
-            pizzaNev: "Sonkás pizza",
+            pizzaNev: "Hawaii",
             darab: 2,
             meret: "király",
             vevoNev: "Kiss Anna"
         },
         {
-            pizzaNev: "Magyaros pizza",
+            pizzaNev: "Betyáros",
             darab: 1,
             meret: "főnemes",
             vevoNev: "Nagy Péter"
@@ -48,6 +52,16 @@
     ];
 
     let szerkesztettIndex = -1;
+
+    function pizzaListaFeltoltes() {
+        const select = document.getElementById("pizzaNev");
+        pizzaLista.forEach(pizza => {
+            const option = document.createElement("option");
+            option.value = pizza;
+            option.text = pizza;
+            select.appendChild(option);
+        });
+    }
 
     function uzenetKiir(szoveg) {
         document.getElementById("uzenet").innerHTML = `<div class="empty-box">${szoveg}</div>`;
@@ -86,7 +100,7 @@
 
     function mezoErtekek() {
         return {
-            pizzaNev: document.getElementById("pizzaNev").value.trim(),
+            pizzaNev: document.getElementById("pizzaNev").value,
             darab: parseInt(document.getElementById("darab").value),
             meret: document.getElementById("meret").value,
             vevoNev: document.getElementById("vevoNev").value.trim()
@@ -96,7 +110,7 @@
     function mezokUritese() {
         document.getElementById("pizzaNev").value = "";
         document.getElementById("darab").value = 1;
-        document.getElementById("meret").value = "Kicsi";
+        document.getElementById("meret").value = "apród";
         document.getElementById("vevoNev").value = "";
         szerkesztettIndex = -1;
         document.querySelector(".btn-primary").textContent = "Mentés";
@@ -143,6 +157,7 @@
         }
     }
 
+    pizzaListaFeltoltes();
     listaMegjelenitese();
 </script>
 
