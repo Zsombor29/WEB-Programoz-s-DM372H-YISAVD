@@ -76,6 +76,7 @@ main {
     border-radius: 18px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.08);
     padding: 28px;
+    width: 800px;
 }
 
 .hero {
