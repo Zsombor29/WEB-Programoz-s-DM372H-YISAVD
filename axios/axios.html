@@ -40,13 +40,20 @@
             "Sonkás-kukoricás", "Szalámis", "Szicíliai", "Szőke kapitány", "Tenger gyümölcsei",
             "Tündi kedvence", "Tüzes", "UFO", "Viking"
             ];
+            
         useEffect(() => {
             betolt();
         }, []);
 
-        
         const betolt = () => {
             axios.get(API_URL).then(res => setRendelesek(res.data));
+        };
+
+        const megjelenitUzenetet = (szoveg) => {
+            setUzenet(szoveg);
+            setTimeout(() => {
+                setUzenet("");
+            }, 1800);
         };
 
         const mezokUritese = () => {
@@ -59,7 +66,7 @@
 
         const mentes = () => {
             if (!pizzaNev || !vevoNev) {
-                setUzenet("Kérlek, tölts ki minden mezőt!");
+                megjelenitUzenetet("Kérlek, tölts ki minden mezőt!");
                 return;
             }
 
@@ -73,14 +80,14 @@
             if (szerkesztettId) {
                 axios.put(API_URL, { ...adat, id: szerkesztettId })
                     .then(() => {
-                        setUzenet("Rendelés módosítva.");
+                        megjelenitUzenetet("Rendelés módosítva.");
                         mezokUritese();
                         betolt();
                     });
             } else {
                 axios.post(API_URL, adat)
                     .then(() => {
-                        setUzenet("Új rendelés hozzáadva.");
+                        megjelenitUzenetet("Új rendelés hozzáadva.");
                         mezokUritese();
                         betolt();
                     });
@@ -90,7 +97,7 @@
         const torol = (id) => {
             if (confirm("Biztosan törlöd?")) {
                 axios.delete(API_URL, { data: { id } }).then(() => {
-                    setUzenet("A rendelés törölve lett.");
+                    megjelenitUzenetet("A rendelés törölve lett.");
                     betolt();
                 });
             }
