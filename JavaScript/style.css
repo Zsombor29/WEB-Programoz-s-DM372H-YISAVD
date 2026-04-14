@@ -109,20 +109,10 @@ main {
 
 .hero-image {
     width: 100%;
-    min-height: 280px;
+    height: 280px;
+    object-fit: cover;
     border-radius: 18px;
-    background: radial-gradient(circle at top, #ffd166, #f77f00 55%, #c1121f 100%);
-    position: relative;
-    overflow: hidden;
-}
-
-.hero-image::before {
-    content: "🍕";
-    font-size: 130px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -52%);
+    display: block;
 }
 
 .section-title {

@@ -6,7 +6,7 @@ const basePath = isSubPage ? '../' : '';
 
 const headerEsNav = `
 <header class="site-header">
-    <div class="topbar">🍕 Friss, forró, gyors – Pizza King</div>
+    <div class="topbar">Friss, forró, gyors – Pizza King</div>
     <h1>Web programozás-1 Előadás Házi feladat</h1>
     <p class="subtitle">Pizza King rendeléskezelő rendszer</p>
 </header>
